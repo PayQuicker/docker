@@ -1,0 +1,20 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Docker Image for build
+      run: docker build . --file build.Dockerfile --tag my-image-name:build-sdk-$(date +%s)
+    - name: Docker Image for deploy
+      run: docker build . --file deploy.Dockerfile --tag my-image-name:deploy-sdk-$(date +%s)
