@@ -29,9 +29,9 @@ jobs:
       matrix:
         include:
           - dockerfile: build.Dockerfile
-            image: ghcr.io/devops/build-sdk
+            image: ghcr.io/PayQuicker/docker/build-sdk
           - dockerfile: deploy.Dockerfile
-            image: ghcr.io/devops/deploy-sdk
+            image: ghcr.io/PayQuicker/docker/deploy-sdk
     permissions:
       contents: read
       packages: write
