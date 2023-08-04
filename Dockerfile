@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:latest
 
 RUN apt-get update
-RUN apt-get install azure-cli wget apt-transport-https software-properties-common jq -y
+RUN apt-get install azure-cli wget apt-transport-https software-properties-common jq docker -y
 RUN az aks install-cli
 RUN wget https://get.helm.sh/helm-v3.9.3-linux-amd64.tar.gz -O - | tar -xz
 RUN mv linux-amd64/helm /usr/bin/helm
