@@ -15,7 +15,7 @@
 
 
 FROM docker:23.0-cli
-RUN apk add --no-cache --update bash icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib
+RUN apk add --no-cache --update bash icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib jq
 RUN apk add --no-cache --update libgdiplus
 RUN apk add --no-cache --update python3 py3-pip 
 RUN apk add --no-cache --update --virtual=build gcc musl-dev python3-dev libffi-dev openssl-dev cargo make && pip3 install --no-cache-dir --prefer-binary azure-cli
