@@ -16,4 +16,4 @@ RUN apk add --no-cache \
         icu-data-full \
         icu-libs
 # enable all cultures - it is set to true in base image
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+# ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
