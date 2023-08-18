@@ -11,3 +11,9 @@ RUN mkdir -p /usr/share/dotnet \
 RUN wget https://dot.net/v1/dotnet-install.sh
 RUN chmod +x dotnet-install.sh
 RUN ./dotnet-install.sh -c 7.0 --install-dir /usr/share/dotnet
+# Install Culture prerequisities
+RUN apk add --no-cache \
+        icu-data-full \
+        icu-libs
+# enable all cultures - it is set to true in base image
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
