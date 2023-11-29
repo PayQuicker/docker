@@ -1,7 +1,9 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0.100-1-alpine3.18-amd64 as sdk
+FROM mcr.microsoft.com/dotnet/sdk:7.0.400-alpine3.18-amd64 as sdk7
+FROM mcr.microsoft.com/dotnet/sdk:8.0.100-1-alpine3.18-amd64 as sdk8
                                   
 FROM docker:23-dind
-COPY --from=sdk / /
+COPY --from=sdk7 / /
+COPY --from=sdk8 / /
 RUN apk add --no-cache --update bash icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib jq git npm yarn
 RUN apk add --no-cache --update libgdiplus
 RUN apk add --no-cache --update python3 py3-pip 
