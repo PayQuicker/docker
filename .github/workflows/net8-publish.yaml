@@ -2,28 +2,32 @@ name: Docker Build and Publish
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: payquicker/docker
+    
 
 jobs:
-  build-and-publish:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile-net8 --tag net8
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Build and tag Docker image
-      run: |
-        docker buildx create --use
-        docker buildx inspect --bootstrap
-        docker buildx build --platform linux/amd64,linux/arm64 -t ${{ github.repository }}:net8 -f Dockerfile-net8 .
-        
+    # Log in to GitHub Container Registry
     - name: Log in to GitHub Container Registry
-      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
-    - name: Push Docker image to GitHub Container Registry
-      run: docker push ghcr.io/${{ github.repository }}/net8
+    # Push the Docker image to GitHub Container Registry
+    - name: Push image to GitHub Container Registry
+      run: |
+        docker tag net8 ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:net8
+        docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:net8
