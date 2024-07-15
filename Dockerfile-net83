@@ -7,10 +7,22 @@ COPY --from=sdk7 / /
 COPY --from=sdk8 / /
 COPY --from=sdk82 / /
 COPY --from=sdk83 / /
-RUN apk add --no-cache --update bash icu-libs krb5-libs libgcc libintl libssl1.1 libstdc++ zlib jq git npm yarn
+RUN apk add --no-cache --update bash icu-libs krb5-libs libgcc libintl libssl3 libstdc++ zlib jq git npm yarn
 RUN apk add --no-cache --update libgdiplus
-RUN apk add --no-cache --update python3 py3-pip 
-RUN apk add --no-cache --update --virtual=build gcc musl-dev python3-dev libffi-dev openssl-dev cargo make && pip3 install --no-cache-dir --prefer-binary azure-cli
+RUN apk add gcc python3-dev musl-dev linux-headers
+RUN apk update && \
+    apk add --no-cache python3 py3-pip
+
+# Step 2: Install build dependencies
+RUN apk add --no-cache --virtual .build-deps gcc musl-dev libffi-dev openssl-dev python3-dev cargo make
+# RUN pip install --upgrade pip
+
+# Step 3: Install Azure CLI using pip without upgrading pip
+RUN pip3 install --break-system-packages --no-cache-dir azure-cli
+
+# Step 4: Remove build dependencies
+RUN apk del .build-deps
+
 RUN az aks install-cli
 RUN wget https://get.helm.sh/helm-v3.9.3-linux-amd64.tar.gz -O - | tar -xz
 RUN mv linux-amd64/helm /usr/bin/helm
