@@ -1,24 +1,29 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0.400-alpine3.18-amd64 as sdk7
 FROM mcr.microsoft.com/dotnet/sdk:8.0.100-1-alpine3.18-amd64 as sdk8
 FROM mcr.microsoft.com/dotnet/sdk:8.0.201-alpine3.18-amd64 as sdk82
-FROM mcr.microsoft.com/dotnet/sdk:8.0.303-alpine3.20-amd64 as sdk83                             
+FROM mcr.microsoft.com/dotnet/sdk:8.0.303-alpine3.20-amd64 as sdk83
 FROM docker:23-dind
 COPY --from=sdk7 / /
 COPY --from=sdk8 / /
 COPY --from=sdk82 / /
 COPY --from=sdk83 / /
-ENV PATH="${PATH}:~/azure_cli_velocity/bin"
 RUN apk add --no-cache --update bash icu-libs krb5-libs libgcc libintl libssl3 libstdc++ zlib jq git npm yarn
 RUN apk add --no-cache --update libgdiplus
-RUN apk add --no-cache --update gcc python3-dev musl-dev linux-headers
+RUN apk add gcc python3-dev musl-dev linux-headers
 RUN apk update && \
     apk add --no-cache python3 py3-pip
 
-# # Step 2: Install build dependencies
+# Step 2: Install build dependencies
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev libffi-dev openssl-dev python3-dev cargo make
-# RUN python3 -m venv ~/azure_cli_velocity && echo 'alias pip3="~/azure_cli_velocity/bin/pip3"' >> .bashrc && source .bashrc
-RUN python3 -m venv ~/azure_cli_velocity && . ~/azure_cli_velocity/bin/activate && pip3 install --upgrade pip && pip3 install azure-cli && pip3 install setuptools && deactivate
-RUN export PATH=$PATH:~/azure_cli_velocity/bin && az aks install-cli
+# RUN pip install --upgrade pip
+
+# Step 3: Install Azure CLI using pip without upgrading pip
+RUN pip3 install --break-system-packages --no-cache-dir azure-cli
+
+# Step 4: Remove build dependencies
+RUN apk del .build-deps
+
+RUN az aks install-cli
 RUN wget https://get.helm.sh/helm-v3.9.3-linux-amd64.tar.gz -O - | tar -xz
 RUN mv linux-amd64/helm /usr/bin/helm
 ENTRYPOINT ["dockerd-entrypoint.sh"]
