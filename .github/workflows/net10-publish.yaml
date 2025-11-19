@@ -21,11 +21,18 @@ jobs:
 
       - name: Build Docker image (net10)
         run: |
-          docker build ./github/docker -f ./github/docker/Dockerfile-net10 -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:net10
+          set -euo pipefail
+          # Docker requires lowercase repository names. Ensure the tag is lowercase.
+          LOWER_IMAGE="$(echo "${REGISTRY}/${IMAGE_NAME}" | tr '[:upper:]' '[:lower:]')"
+          echo "Building image: ${LOWER_IMAGE}:net10"
+          docker build ./github/docker -f ./github/docker/Dockerfile-net10 -t "${LOWER_IMAGE}:net10"
 
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
       - name: Push image to GitHub Container Registry
         run: |
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:net10
+          set -euo pipefail
+          LOWER_IMAGE="$(echo "${REGISTRY}/${IMAGE_NAME}" | tr '[:upper:]' '[:lower:]')"
+          echo "Pushing image: ${LOWER_IMAGE}:net10"
+          docker push "${LOWER_IMAGE}:net10"
