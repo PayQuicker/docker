@@ -1,4 +1,4 @@
-FROM docker:23-dind
+FROM docker:29-dind
 
 # Install minimal tooling and runtime deps, then use Microsoft's dotnet-install
 # script to install side-by-side SDK channels (7,8,9,10) into
