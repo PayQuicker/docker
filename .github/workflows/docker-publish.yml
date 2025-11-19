@@ -1,4 +1,4 @@
-name: Docker
+name: Docker Build and Publish (net10)
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -8,8 +8,8 @@ name: Docker
 on:
   schedule:
     - cron: '28 17 * * *'
+  # Run for any git push to any branch; keep semver tag trigger
   push:
-    branches: [ "main" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
   # Run for pull request closes so we can act on merges (only when merged)
