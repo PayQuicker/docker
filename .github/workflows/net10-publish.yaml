@@ -25,7 +25,8 @@ jobs:
           # Docker requires lowercase repository names. Ensure the tag is lowercase.
           LOWER_IMAGE="$(echo "${REGISTRY}/${IMAGE_NAME}" | tr '[:upper:]' '[:lower:]')"
           echo "Building image: ${LOWER_IMAGE}:net10"
-          docker build ./github/docker -f ./github/docker/Dockerfile-net10 -t "${LOWER_IMAGE}:net10"
+          # Use repository root as context and Dockerfile at repo root (Dockerfile-net10).
+          docker build . -f Dockerfile-net10 -t "${LOWER_IMAGE}:net10"
 
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
