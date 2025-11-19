@@ -13,7 +13,23 @@ RUN apk add --no-cache --update \
     icu-libs \
     libgcc \
     libstdc++ \
-    openssl
+    openssl \
+    icu-libs \
+    krb5-libs \
+    libgcc \
+    libintl \
+    libssl3 \
+    libstdc++ \
+    zlib \
+    jq \
+    git \
+    npm \
+    yarn \
+    python3 \
+    py3-pip \
+    curl \
+    gnupg \
+    libc6-compat
 
 # Download and run the official installer for the SDK channels you need.
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh \
@@ -30,14 +46,6 @@ RUN curl -sSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh \
 # Ensure CLI sees the installed SDKs
 ENV DOTNET_ROOT=/usr/share/dotnet
 ENV PATH="$DOTNET_ROOT:$PATH"
-
-# Install dependencies for Azure CLI
-RUN apk add --no-cache \
-    python3 \
-    py3-pip \
-    curl \
-    gnupg \
-    libc6-compat
 
 # Install build dependencies, create venv, install azure-cli into it, then remove build deps
 RUN apk add --no-cache --virtual .build-deps \
