@@ -1,4 +1,4 @@
-name: Docker Build and Publish (net10)
+name: Docker
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -8,13 +8,11 @@ name: Docker Build and Publish (net10)
 on:
   schedule:
     - cron: '28 17 * * *'
-  # Run for any git push to any branch; keep semver tag trigger
   push:
+    branches: [ "main" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
-  # Run for pull request closes so we can act on merges (only when merged)
   pull_request:
-    types: [closed]
     branches: [ "main" ]
 
 env:
@@ -76,14 +74,8 @@ jobs:
         uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a
         with:
           context: .
-          # Use the specific Dockerfile for the net10 image
-          file: ./github/docker/Dockerfile-net10
           push: ${{ github.event_name != 'pull_request' }}
-          platforms: linux/amd64
-          # include the automatic tags from metadata-action and an explicit net10 tag
-          tags: |
-            ${{ steps.meta.outputs.tags }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:net10
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -98,7 +90,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         env:
           # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-          TAGS: ${{ steps.meta.outputs.tags }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:net10
+          TAGS: ${{ steps.meta.outputs.tags }}
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
