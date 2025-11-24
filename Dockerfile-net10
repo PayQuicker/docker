@@ -61,7 +61,8 @@ RUN apk add --no-cache --virtual .build-deps \
     && /opt/venv/bin/pip install --no-cache-dir azure-cli \
     && /opt/venv/bin/az aks install-cli \
     && apk del .build-deps \
-    && rm -rf /root/.cache/pip/*
+    && rm -rf /root/.cache/pip/* \
+    && curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -x -s -- -b /usr/local/bin
 
 # Update PATH to include the virtual environment
 ENV PATH="/opt/venv/bin:$PATH"
