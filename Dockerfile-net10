@@ -14,7 +14,7 @@ RUN apk add --no-cache --update \
     libgcc \
     libstdc++ \
     openssl \
-    icu-libs \
+    icu-data-full \
     krb5-libs \
     libgcc \
     libintl \
@@ -30,6 +30,12 @@ RUN apk add --no-cache --update \
     curl \
     gnupg \
     libc6-compat
+
+
+#Added 12/22/2025
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+ENV LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8
 
 # Download and run the official installer for the SDK channels you need.
 RUN curl -sSL https://dot.net/v1/dotnet-install.sh -o /tmp/dotnet-install.sh \
